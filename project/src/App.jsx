@@ -7,7 +7,10 @@ import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import UsersList from "./pages/admin/UsersList";
+import ForgotPassword from "./pages/forgotPassword";
+import ResetPassword from "./pages/reserPassword";
 import SubmitTask from "./pages/admin/SubmitTask"; 
+
 
 const theme = createTheme({
   palette: {
@@ -31,7 +34,7 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '10px',
+          borderRadius: '8px',
           textTransform: 'none',
         },
       },
@@ -59,6 +62,9 @@ const App = () => (
           <Route path="/" element={<Navigate to="/signin" replace />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+
           
           {/* Admin Dashboard Routes */}
           <Route path="/admin" element={<DashboardLayout />}>

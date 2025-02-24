@@ -20,8 +20,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  marginTop: theme.spacing(4),
-  marginBottom: theme.spacing(4),
+  marginTop: theme.spacing(8),
   padding: theme.spacing(4),
   display: 'flex',
   flexDirection: 'column',
@@ -33,15 +32,15 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(3, 0, 2),
+  margin: theme.spacing(2, 0),
   padding: theme.spacing(1.5),
   borderRadius: '8px',
   textTransform: 'none',
   fontSize: '1rem',
   '&.MuiButton-containedPrimary': {
-    backgroundColor: '#9b87f5',
+    backgroundColor: '#dd2825',
     '&:hover': {
-      backgroundColor: '#8b74f2',
+      backgroundColor: '', // Même couleur au survol
     },
   },
 }));
@@ -80,7 +79,7 @@ const SignUp = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch('http://localhost:5001/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,16 +109,21 @@ const SignUp = () => {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <StyledPaper elevation={6}>
-        <Typography component="h1" variant="h4" sx={{ mb: 4, fontWeight: 500 }}>
-          Register a new membership
-        </Typography>
+<Container component="main" maxWidth="sm">
+<StyledPaper elevation={6}>
+        {/* Logo */}
+        <Box component="div" sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <img src="/logo.png" alt="Logo" style={{ height: '70px', width: 'auto' }} />
+        </Box>
+
+     
+
         {error && (
           <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
             {error}
           </Alert>
         )}
+
         <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
             <TextField
@@ -173,13 +177,34 @@ const SignUp = () => {
           />
           
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Birth Date"
-              value={formData.birthDate}
-              onChange={handleDateChange}
-              sx={{ width: '100%', mt: 2 }}
-            />
-          </LocalizationProvider>
+  <DatePicker
+    label="Birth Date"
+    value={formData.birthDate}
+    onChange={handleDateChange}
+    PopperProps={{
+      disablePortal: true,
+      modifiers: [
+        {
+          name: 'preventOverflow',
+          options: {
+            boundary: 'window',
+          },
+        },
+      ],
+    }}
+    slotProps={{
+      desktop: {
+        transitionDuration: '0ms', // Supprimer toute animation de transition
+      },
+    }}
+    sx={{ width: '100%', mt: 2 }}
+  />
+</LocalizationProvider>
+
+
+
+
+
           
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>Role</InputLabel>
@@ -215,15 +240,21 @@ const SignUp = () => {
             fullWidth
             variant="contained"
             color="primary"
+            sx={{
+              //color: '#FFFFFF',  // This sets the text color to white
+              // or
+              color: 'white'     // This also works
+            }}
           >
-            Register
+            Sign Up
           </StyledButton>
           
           <Box sx={{ mt: 2, textAlign: 'center' }}>
             <Link
-              component="button"
+              href="#"
               variant="body2"
               onClick={() => navigate('/signin')}
+              sx={{ display: 'block', mb: 1 }}
             >
               Already have an account? Sign in
             </Link>

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
 import { 
   Box,
   Container,
@@ -37,7 +39,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-containedPrimary': {
     backgroundColor: '#dd2825',
     '&:hover': {
-      backgroundColor: '#8b74f2',
+      backgroundColor: 'rgba(221, 40, 37, 0.7)', // Même couleur au survol
     },
   },
 }));
@@ -64,7 +66,7 @@ const SignIn = () => {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('http://localhost:5001/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,9 +160,9 @@ const SignIn = () => {
   type="submit"
   fullWidth
   variant="contained"
-  //
+  color="primary"
   sx={{
-    color: '#FFFFFF',  // This sets the text color to white
+    //color: '#FFFFFF',  // This sets the text color to white
     // or
     color: 'white'     // This also works
   }}
@@ -175,13 +177,24 @@ const SignIn = () => {
           </Box>
 
           <StyledButton
-            fullWidth
-            variant="outlined"
-            startIcon={<GoogleIcon />}
-            onClick={() => console.log('Google sign in')}
-          >
-            Sign in using Google
-          </StyledButton>
+  fullWidth
+  variant="outlined"
+  startIcon={<GoogleIcon />}
+  onClick={() => console.log('Google sign in')}
+>
+  Sign in using Google
+</StyledButton>
+
+<StyledButton
+  fullWidth
+  variant="outlined"
+  startIcon={<GitHubIcon />}
+  onClick={() => console.log('GitHub sign in')}
+  style={{ marginTop: '1px' }} // Réduction de l'espace entre les boutons
+>
+  Sign in using GitHub
+</StyledButton>
+
 
           <Box sx={{ mt: 2, textAlign: 'center' }}>
             <Link
@@ -196,6 +209,7 @@ const SignIn = () => {
               href="#"
               variant="body2"
               onClick={() => navigate('/signup')}
+              
             >
               Register a new membership
             </Link>

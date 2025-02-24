@@ -1,55 +1,60 @@
-// src/components/layout/Sidebar.jsx
 import {
-    Drawer,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    ListItemButton,
-    Toolbar,
-    Typography,
-    Divider,
-    Box
-  } from '@mui/material';
-  import {
-    People as PeopleIcon,
-    Person as PersonIcon,
-    School as SchoolIcon,
-    Assignment as AssignmentIcon
-  } from '@mui/icons-material';
-  import { useNavigate, useLocation } from 'react-router-dom';
-  const drawerWidth = 240;
-  import './Sidebar.css';
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemButton,
+  Toolbar,
+  Box,
+  Divider
+} from '@mui/material';
+import {
+  People as PeopleIcon,
+  Person as PersonIcon,
+  School as SchoolIcon,
+  Assignment as AssignmentIcon,
+  ExitToApp as ExitToAppIcon
+} from '@mui/icons-material';
+import { useNavigate, useLocation } from 'react-router-dom';
+const drawerWidth = 240;
+import './Sidebar.css';
 
-  const Sidebar = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-  
-    const menuItems = [
-      {
-        text: 'Users Management',
-        icon: <PeopleIcon style={{ color: 'white' }} />,
-        path: '/admin/users',
-        subItems: [
-          { text: 'All Users', icon: <PersonIcon style={{ color: 'white' }} />, path: '/admin/users' },
-          { text: 'Students', icon: <SchoolIcon style={{ color: 'white' }} />, path: '/admin/users/students' },
-          { text: 'Tutors', icon: <PersonIcon style={{ color: 'white' }} />, path: '/admin/users/tutors' }
-        ]
-      },
-      {
-        text: 'Projects',
-        icon: <AssignmentIcon style={{ color: 'white' }} />,
-        path: '/admin/projects'
-      },
-      {
-        text: 'Assign Task',
-        icon: <AssignmentIcon style={{ color: 'white' }} />,
-        path: '/admin/submit-task'      
-      }
-    ];
-  
-    return (
-      <Drawer
+const Sidebar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const menuItems = [
+    {
+      text: 'Users Management',
+      icon: <PeopleIcon style={{ color: 'white' }} />,
+      path: '/admin/users',
+      subItems: [
+        { text: 'All Users', icon: <PersonIcon style={{ color: 'white' }} />, path: '/admin/users' },
+        { text: 'Students', icon: <SchoolIcon style={{ color: 'white' }} />, path: '/admin/users/students' },
+        { text: 'Tutors', icon: <PersonIcon style={{ color: 'white' }} />, path: '/admin/users/tutors' }
+      ]
+    },
+    {
+      text: 'Projects',
+      icon: <AssignmentIcon style={{ color: 'white' }} />,
+      path: '/admin/projects'
+    },
+    {
+      text: 'Assign Task',
+      icon: <AssignmentIcon style={{ color: 'white' }} />,
+      path: '/admin/submit-task'      
+    }
+  ];
+
+  const handleLogout = () => {
+    // Implement your logout functionality here
+    localStorage.removeItem('authToken');
+    navigate('/signin');
+  };
+
+  return (
+    <Drawer
         variant="permanent"
         className="sidebar" // Apply the CSS class here
         sx={{
@@ -80,6 +85,7 @@ import {
 </Toolbar>
 
         <Divider />
+        
         <List>
           {menuItems.map((item) => (
             <Box key={item.text}>
@@ -104,14 +110,25 @@ import {
                       <ListItemIcon>{subItem.icon}</ListItemIcon>
                       <ListItemText primary={subItem.text} />
                     </ListItemButton>
+                    
                   ))}
+                  
                 </List>
+                
               )}
             </Box>
           ))}
+             <ListItem disablePadding>
+          <ListItemButton onClick={handleLogout}>
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </ListItem>
         </List>
       </Drawer>
-    );
-  };
-  
-  export default Sidebar;
+  );
+};
+
+export default Sidebar;

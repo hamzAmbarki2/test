@@ -4,6 +4,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
+const session = require('express-session');
+
 
 // Import routes
 const userRoutes = require('./routes/userRoutes');
@@ -21,6 +23,18 @@ const app = express();
 
 // Connect to MongoDB
 connectDB();
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'ton-secret-pour-signature', // Utilisation du secret de session depuis .env
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
 
 // Middleware
 app.use(cors());
@@ -52,7 +66,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something broke!' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
