@@ -7,6 +7,8 @@ const BASE_URL = process.env.NODE_ENV === 'production' ? 'https://mon-app.com' :
 
 const PasswordResetToken = require('../models/PasswordResetToken');
 
+const invalidatedTokens = new Set();
+
 // Enregistrement d'un utilisateur avec création d'admin
 exports.register = async (req, res) => {
   const { firstName, lastName, email, password, role, adminSecret } = req.body;
@@ -82,8 +84,67 @@ exports.login = async (req, res) => {
 
 
 // Deconnexion
-exports.logout = (req, res) => {
-  res.json({ message: "Logout successful" });
+exports.logout = async (req, res) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (token) {
+      // Add token to invalidated set
+      invalidatedTokens.add(token);
+    }
+
+    // Clear session
+    if (req.session) {
+      req.session.destroy();
+    }
+
+    // Clear cookies with proper options
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      sameSite: 'strict'
+    });
+
+    res.clearCookie('connect.sid', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      sameSite: 'strict'
+    });
+
+    res.status(200).json({ message: "Déconnexion réussie" });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: "Erreur lors de la déconnexion" });
+  }
+};
+
+// Middleware to check authentication
+exports.checkTokenValidity = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
+    // No token provided
+    if (!token) {
+      return res.status(401).json({ message: "Authentification requise" });
+    }
+
+    // Check if token is invalidated
+    if (invalidatedTokens.has(token)) {
+      return res.status(401).json({ message: "Session expirée" });
+    }
+
+    // Check session
+    if (!req.session || !req.session.userId) {
+      return res.status(401).json({ message: "Session invalide" });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Auth check error:', error);
+    res.status(401).json({ message: "Erreur d'authentification" });
+  }
 };
 
 // Demande de réinitialisation de mot de passe

@@ -17,6 +17,7 @@ import {
   ExitToApp as ExitToAppIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 const drawerWidth = 240;
 import './Sidebar.css';
 
@@ -47,10 +48,33 @@ const Sidebar = () => {
     }
   ];
 
-  const handleLogout = () => {
-    // Implement your logout functionality here
-    localStorage.removeItem('authToken');
-    navigate('/signin');
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.replace('/signin');
+        return;
+      }
+
+      await axios.post('http://localhost:5001/api/auth/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Clear all storage
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Force a complete page reload and redirect
+      window.location.replace('/signin');
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace('/signin');
+    }
   };
 
   return (
