@@ -73,40 +73,49 @@ const SignUp = () => {
       birthDate: date
     }));
   };
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  setError('');
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError('');
+  try {
+    const response = await fetch('http://localhost:5001/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      })
+    });
 
-    try {
-      const response = await fetch('http://localhost:5001/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role
-        })
-      });
+    const data = await response.json();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
-      // Registration successful
-      navigate('/signin');
-      
-    } catch (err) {
-      setError(err.message);
-      console.error('Registration error:', err);
+    if (!response.ok) {
+      throw new Error(data.message || 'Registration failed');
     }
-  };
+
+    // Si l'inscription réussit, envoyer la vérification d'email
+    await fetch('http://localhost:5001/api/auth/verify-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: formData.email })
+    });
+
+    // Rediriger vers la page de connexion après l'inscription et la vérification de l'email
+    navigate('/signin');
+
+  } catch (err) {
+    setError(err.message);
+    console.error('Registration error:', err);
+  }
+};
+
 
   return (
 <Container component="main" maxWidth="sm">

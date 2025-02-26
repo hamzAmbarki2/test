@@ -10,6 +10,7 @@ import UsersList from "./pages/admin/UsersList";
 import ForgotPassword from "./pages/forgotPassword";
 import ResetPassword from "./pages/reserPassword";
 import SubmitTask from "./pages/admin/SubmitTask"; 
+import VerifyEmail from "./pages/VerifyEmail";
 
 
 const theme = createTheme({

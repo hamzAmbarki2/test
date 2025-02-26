@@ -56,32 +56,52 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Trouver l'utilisateur par son email
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Identifiants invalides" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Comparer le mot de passe fourni avec le hash du mot de passe stocké
+    // Check if the account is locked
+    if (user.accountStatus === false) {
+      return res.status(403).json({ message: "Account locked ! Contact the administrator." });
+    }
+
+    // Compare the provided password with the stored hashed password
     const isMatch = await user.comparePassword(password);
+    
     if (!isMatch) {
-      return res.status(401).json({ message: "Identifiants invalides" });
+      // Increment failed attempts counter
+      user.failedAttempts = (user.failedAttempts || 0) + 1;
+      console.log(user.failedAttempts);
+      
+      // If 10 failures, lock the account
+      if (user.failedAttempts >= 5) {
+        user.accountStatus = false;
+      }
+
+      await user.save();
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Créer un token JWT (si nécessaire)
+    // Reset failed attempts counter after successful login
+    user.failedAttempts = 0;
+    await user.save();
+    console.log(user.failedAttempts);
+
+    // Create a JWT token (if needed)
     const token = generateToken(user);
 
-    // Créer une session pour l'utilisateur
-    req.session.userId = user._id;  // Stocker l'ID de l'utilisateur dans la session
-    req.session.userRole = user.userRole; // Stocker le rôle dans la session (optionnel)
+    // Create a session for the user
+    req.session.userId = user._id;
+    req.session.userRole = user.userRole;
 
-    // Retourner le token et une réponse de succès
-    res.json({ message: "Connexion réussie", token, session: req.session });
+    res.json({ message: "Login successful", token, session: req.session });
+
   } catch (error) {
-    res.status(500).json({ message: "Erreur du serveur", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 
 // Deconnexion
 exports.logout = async (req, res) => {
