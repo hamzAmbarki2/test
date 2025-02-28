@@ -66,6 +66,8 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
+
           
           {/* Admin Dashboard Routes */}
           <Route path="/admin" element={<DashboardLayout />}>

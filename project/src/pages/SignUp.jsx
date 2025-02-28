@@ -73,59 +73,48 @@ const SignUp = () => {
       birthDate: date
     }));
   };
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  setError('');
 
-  try {
-    const response = await fetch('http://localhost:5001/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role
-      })
-    });
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
 
-    const data = await response.json();
+    try {
+      const response = await fetch('http://localhost:5001/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role
+        })
+      });
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Registration failed');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      // Rediriger vers la page de connexion après l'inscription
+      navigate('/signin');
+
+    } catch (err) {
+      setError(err.message);
+      console.error('Registration error:', err);
     }
-
-    // Si l'inscription réussit, envoyer la vérification d'email
-    await fetch('http://localhost:5001/api/auth/verify-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email: formData.email })
-    });
-
-    // Rediriger vers la page de connexion après l'inscription et la vérification de l'email
-    navigate('/signin');
-
-  } catch (err) {
-    setError(err.message);
-    console.error('Registration error:', err);
-  }
-};
-
+  };
 
   return (
-<Container component="main" maxWidth="sm">
-<StyledPaper elevation={6}>
+    <Container component="main" maxWidth="sm">
+      <StyledPaper elevation={6}>
         {/* Logo */}
         <Box component="div" sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', mb: 3 }}>
           <img src="/logo.png" alt="Logo" style={{ height: '70px', width: 'auto' }} />
         </Box>
-
-     
 
         {error && (
           <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
@@ -163,7 +152,7 @@ const handleSubmit = async (event) => {
             onChange={handleChange}
           />
           
-          <TextField
+ <TextField
             margin="normal"
             required
             fullWidth
@@ -186,35 +175,30 @@ const handleSubmit = async (event) => {
           />
           
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DatePicker
-    label="Birth Date"
-    value={formData.birthDate}
-    onChange={handleDateChange}
-    PopperProps={{
-      disablePortal: true,
-      modifiers: [
-        {
-          name: 'preventOverflow',
-          options: {
-            boundary: 'window',
-          },
-        },
-      ],
-    }}
-    slotProps={{
-      desktop: {
-        transitionDuration: '0ms', // Supprimer toute animation de transition
-      },
-    }}
-    sx={{ width: '100%', mt: 2 }}
-  />
-</LocalizationProvider>
+            <DatePicker
+              label="Birth Date"
+              value={formData.birthDate}
+              onChange={handleDateChange}
+              PopperProps={{
+                disablePortal: true,
+                modifiers: [
+                  {
+                    name: 'preventOverflow',
+                    options: {
+                      boundary: 'window',
+                    },
+                  },
+                ],
+              }}
+              slotProps={{
+                desktop: {
+                  transitionDuration: '0ms', // Supprimer toute animation de transition
+                },
+              }}
+              sx={{ width: '100%', mt: 2 }}
+            />
+          </LocalizationProvider>
 
-
-
-
-
-          
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>Role</InputLabel>
             <Select
@@ -250,9 +234,7 @@ const handleSubmit = async (event) => {
             variant="contained"
             color="primary"
             sx={{
-              //color: '#FFFFFF',  // This sets the text color to white
-              // or
-              color: 'white'     // This also works
+              color: 'white' // This sets the text color to white
             }}
           >
             Sign Up

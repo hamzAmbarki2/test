@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Container, Box, Typography, TextField, Button, Paper, Alert } from "@mui/material";
+import { Container, Box, Typography, Button, Paper, Alert } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 
@@ -38,7 +38,18 @@ const VerifyEmail = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  
+  useEffect(() => {
+    const verifyEmailToken = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5001/api/auth/verify-email/${token}`);
+        setMessage(response.data.message); // Set success message
+      } catch (err) {
+        setError(err.response?.data?.message || "Verification failed"); // Set error message
+      }
+    };
+
+    verifyEmailToken(); // Call the function to verify the token
+  }, [token]); // Run this effect when the token changes
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,11 +59,8 @@ const VerifyEmail = () => {
           <img src="/logo.png" alt="Logo" style={{ height: '70px', width: 'auto' }} />
         </Box>
         
-        {error && <Alert severity="error" sx={{ mb: 2, width: '100%' }}>{error}</Alert>}
         {message && <Alert severity="success" sx={{ mb: 2, width: '100%' }}>{message}</Alert>}
         
- <p>Email verifie avec success</p>
-
         <Box sx={{ mt: 2, textAlign: 'center' }}>
           <Typography variant="body2" color="textSecondary">
             Return to <a href="/signin" style={{ textDecoration: 'none', color: '#dd2825' }}>Sign In</a>
