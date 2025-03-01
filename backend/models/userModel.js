@@ -15,8 +15,10 @@ const userSchema = new Schema(
     lastName:  { type: String, required: true },
     email:     { type: String, required: true, unique: true },
     password:  { type: String, required: true },
+    failedAttempts: { type: Number, default: 0 }, // Compteur d'échecs
     accountStatus: { type: Boolean, default: true },
-    phone:     { type: String },
+    isVerified: { type: Boolean, default: false },
+    phone: { type: String },
     userRole:  {
       type: String,
       enum: Object.values(UserRole),
@@ -48,7 +50,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Remove password from responses
+// Remove sensitive fields from responses
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;

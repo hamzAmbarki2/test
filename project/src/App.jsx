@@ -10,6 +10,7 @@ import UsersList from "./pages/admin/UsersList";
 import ForgotPassword from "./pages/forgotPassword";
 import ResetPassword from "./pages/reserPassword";
 import SubmitTask from "./pages/admin/SubmitTask"; 
+import VerifyEmail from "./pages/VerifyEmail";
 
 
 const theme = createTheme({
@@ -64,6 +65,8 @@ const App = () => (
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
           
           {/* Admin Dashboard Routes */}

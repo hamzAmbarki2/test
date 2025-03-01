@@ -99,9 +99,9 @@ const SignUp = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      // Registration successful
+      // Rediriger vers la page de connexion après l'inscription
       navigate('/signin');
-      
+
     } catch (err) {
       setError(err.message);
       console.error('Registration error:', err);
@@ -109,14 +109,12 @@ const SignUp = () => {
   };
 
   return (
-<Container component="main" maxWidth="sm">
-<StyledPaper elevation={6}>
+    <Container component="main" maxWidth="sm">
+      <StyledPaper elevation={6}>
         {/* Logo */}
         <Box component="div" sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', mb: 3 }}>
           <img src="/logo.png" alt="Logo" style={{ height: '70px', width: 'auto' }} />
         </Box>
-
-     
 
         {error && (
           <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
@@ -154,7 +152,7 @@ const SignUp = () => {
             onChange={handleChange}
           />
           
-          <TextField
+ <TextField
             margin="normal"
             required
             fullWidth
@@ -177,35 +175,30 @@ const SignUp = () => {
           />
           
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DatePicker
-    label="Birth Date"
-    value={formData.birthDate}
-    onChange={handleDateChange}
-    PopperProps={{
-      disablePortal: true,
-      modifiers: [
-        {
-          name: 'preventOverflow',
-          options: {
-            boundary: 'window',
-          },
-        },
-      ],
-    }}
-    slotProps={{
-      desktop: {
-        transitionDuration: '0ms', // Supprimer toute animation de transition
-      },
-    }}
-    sx={{ width: '100%', mt: 2 }}
-  />
-</LocalizationProvider>
+            <DatePicker
+              label="Birth Date"
+              value={formData.birthDate}
+              onChange={handleDateChange}
+              PopperProps={{
+                disablePortal: true,
+                modifiers: [
+                  {
+                    name: 'preventOverflow',
+                    options: {
+                      boundary: 'window',
+                    },
+                  },
+                ],
+              }}
+              slotProps={{
+                desktop: {
+                  transitionDuration: '0ms', // Supprimer toute animation de transition
+                },
+              }}
+              sx={{ width: '100%', mt: 2 }}
+            />
+          </LocalizationProvider>
 
-
-
-
-
-          
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>Role</InputLabel>
             <Select
@@ -241,9 +234,7 @@ const SignUp = () => {
             variant="contained"
             color="primary"
             sx={{
-              //color: '#FFFFFF',  // This sets the text color to white
-              // or
-              color: 'white'     // This also works
+              color: 'white' // This sets the text color to white
             }}
           >
             Sign Up
